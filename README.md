@@ -1,6 +1,6 @@
 # gRPC Sample Project
 
-Go と Docker Compose で構成した gRPC マイクロサービスのサンプルです。
+gRPCで構成したマイクロサービスのサンプル
 
 ## アーキテクチャ
 
