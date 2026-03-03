@@ -1,0 +1,41 @@
+# Stage 1: proto code generation
+FROM golang:1.24-bookworm AS proto-builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends protobuf-compiler \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
+    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+COPY proto/ /proto/
+
+RUN protoc \
+    --go_out=/ \
+    --go-grpc_out=/ \
+    --go_opt=module=github.com/aberyotaro/grpc-sample \
+    --go-grpc_opt=module=github.com/aberyotaro/grpc-sample \
+    -I /proto \
+    /proto/gateway.proto /proto/uppercase.proto /proto/count.proto
+
+# Stage 2: build
+FROM golang:1.24-bookworm AS builder
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY --from=proto-builder /gen ./gen/
+COPY services/gateway/ ./services/gateway/
+
+RUN go mod tidy && go build -o /server ./services/gateway/
+
+# Stage 3: runtime
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /server /server
+
+EXPOSE 50051
+
+CMD ["/server"]

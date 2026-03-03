@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package count;
+
+option go_package = "github.com/aberyotaro/grpc-sample/gen/count";
+
+service CountService {
+  rpc Count(CountRequest) returns (CountResponse);
+}
+
+message CountRequest {
+  string text = 1;
+}
+
+message CountResponse {
+  int32 count = 1;
+}

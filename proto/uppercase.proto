@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package uppercase;
+
+option go_package = "github.com/aberyotaro/grpc-sample/gen/uppercase";
+
+service UppercaseService {
+  rpc ToUpper(UppercaseRequest) returns (UppercaseResponse);
+}
+
+message UppercaseRequest {
+  string text = 1;
+}
+
+message UppercaseResponse {
+  string text = 1;
+}

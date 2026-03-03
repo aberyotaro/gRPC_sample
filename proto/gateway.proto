@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package gateway;
+
+option go_package = "github.com/aberyotaro/grpc-sample/gen/gateway";
+
+service GatewayService {
+  rpc Process(ProcessRequest) returns (ProcessResponse);
+}
+
+message ProcessRequest {
+  string text = 1;
+}
+
+message ProcessResponse {
+  string uppercase = 1;
+  int32  count     = 2;
+}

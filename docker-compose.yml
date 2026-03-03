@@ -1,0 +1,33 @@
+services:
+  uppercase:
+    build:
+      context: .
+      dockerfile: Dockerfile.uppercase
+    ports:
+      - "50052:50052"
+
+  count:
+    build:
+      context: .
+      dockerfile: Dockerfile.count
+    ports:
+      - "50053:50053"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    ports:
+      - "50051:50051"
+    depends_on:
+      - uppercase
+      - count
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "8080:8080"
+    depends_on:
+      - gateway
